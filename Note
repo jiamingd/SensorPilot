@@ -1,0 +1,18 @@
+Use case desc:
+Write an actor that generates a random sample once per second, and sends the generated sample to some other actor. The sample generating actor should be configured with the ActorRef of its recipient actor when started.
+ 
+The generated samples should have an associated sensor sensor type, e.g. light level, temperature, etc. Each sample should also have an associated value. A finite set of predefined sensor types is acceptable, and the random sensor values do not need to be plausible. The generating actor should pick a sample type at random each time it generates a sample.
+ 
+The sample generating actor should listen for received BackOff messages that contain a timeout parameter. When the sample generating actor receives a BackOff message, it shouldn't generate any samples for the duration specified by the message. After the BackOff duration passes, the actor should resume generating samples again.
+ 
+Write an actor that receives samples. If the recipient actor receives two samples in a row with the same sensor type, it should reply to the sender of the sample with a BackOff message. The duration of the backoff in seconds should be the number of samples in a row of the same type that the actor has received. For example, if the actor receives two temperature samples in a row, it should respond with a BackOff message that has a 2 second duration. If the next sample it receives (after the backoff time elapses) is again a temperature sample, it should tell the sender to backoff for 3 seconds, etc.. The backoff counter should reset as soon as a sample of a different type is received.
+ 
+The generator and recipient actors should print a message to the console every time they receive a message.
+ 
+Write a runnable test rig that starts the a sample generator actor and a sample recipient actor, where the generator actor is configured to message the recipient actor.
+ 
+Write a runnable test rig that starts two sample generator actors and one sample recipient actor, where both generator actors message the same recipient actor.
+
+How to run:
+1. For 1 sender + 1 receiver: SingleSenderPilot
+2. For 2 senders + 1 receiver: SensorPilot
